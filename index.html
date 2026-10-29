@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Matn Hisoblagich</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: #0f172a;
+            color: #f8fafc;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 650px;
+            background-color: #1e293b;
+            border: 1px solid #334155;
+            border-radius: 16px;
+            padding: 25px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.4);
+        }
+
+        h1 {
+            font-size: 1.8rem;
+            color: #38bdf8;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        /* Hisoblagich panellari (Cards) */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+
+        .stat-card {
+            background-color: #0f172a;
+            border: 1px solid #334155;
+            border-radius: 10px;
+            padding: 15px;
+            text-align: center;
+            transition: border-color 0.2s;
+        }
+
+        .stat-card:hover {
+            border-color: #38bdf8;
+        }
+
+        .stat-number {
+            font-size: 1.6rem;
+            font-weight: 700;
+            color: #38bdf8;
+        }
+
+        .stat-label {
+            font-size: 0.85rem;
+            color: #94a3b8;
+            margin-top: 4px;
+        }
+
+        /* Matn kiritish maydoni */
+        textarea {
+            width: 100%;
+            height: 200px;
+            background-color: #0f172a;
+            border: 1px solid #334155;
+            border-radius: 10px;
+            padding: 15px;
+            color: #f8fafc;
+            font-size: 1rem;
+            resize: vertical;
+            outline: none;
+            transition: border-color 0.2s;
+            line-height: 1.5;
+        }
+
+        textarea:focus {
+            border-color: #38bdf8;
+        }
+
+        textarea::placeholder {
+            color: #64748b;
+        }
+
+        /* Boshqaruv tugmalari */
+        .actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        button {
+            flex: 1;
+            padding: 12px;
+            border: none;
+            border-radius: 8px;
+            font-size: 0.95rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.2s, transform 0.1s;
+        }
+
+        button:active {
+            transform: scale(0.98);
+        }
+
+        .btn-copy {
+            background-color: #0ea5e9;
+            color: white;
+        }
+
+        .btn-copy:hover {
+            background-color: #0284c7;
+        }
+
+        .btn-clear {
+            background-color: #ef4444;
+            color: white;
+        }
+
+        .btn-clear:hover {
+            background-color: #dc2626;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>📊 Matn Hisoblagich</h1>
+
+        <!-- Statistika paneli -->
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-number" id="wordCount">0</div>
+                <div class="stat-label">Soʻzlar</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number" id="charCount">0</div>
+                <div class="stat-label">Belgilar</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number" id="charNoSpaceCount">0</div>
+                <div class="stat-label">Probelsiz</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number" id="lineCount">0</div>
+                <div class="stat-label">Qatorlar</div>
+            </div>
+        </div>
+
+        <!-- Matn kiritish oynasi -->
+        <textarea id="textInput" placeholder="Matningizni shu yerga yozing yoki joylashtiring (Paste)..."></textarea>
+
+        <!-- Tugmalar -->
+        <div class="actions">
+            <button class="btn-copy" onclick="copyText()">📋 Nusxalash</button>
+            <button class="btn-clear" onclick="clearText()">🗑️ Toʻzalash</button>
+        </div>
+    </div>
+
+    <script>
+        const textInput = document.getElementById("textInput");
+        const wordCountEl = document.getElementById("wordCount");
+        const charCountEl = document.getElementById("charCount");
+        const charNoSpaceCountEl = document.getElementById("charNoSpaceCount");
+        const lineCountEl = document.getElementById("lineCount");
+
+        // Matn o'zgarganda hisoblash funksiyasi
+        function updateStats() {
+            const text = textInput.value;
+
+            // 1. Belgilar soni
+            const chars = text.length;
+
+            // 2. Probelsiz belgilar soni
+            const charsNoSpace = text.replace(/\s/g, "").length;
+
+            // 3. So'zlar soni
+            const trimmedText = text.trim();
+            const words = trimmedText ? trimmedText.split(/\s+/).length : 0;
+
+            // 4. Qatorlar soni
+            const lines = text ? text.split("\n").length : 0;
+
+            // Natijalarni ekranga chiqarish
+            wordCountEl.innerText = words;
+            charCountEl.innerText = chars;
+            charNoSpaceCountEl.innerText = charsNoSpace;
+            lineCountEl.innerText = lines;
+        }
+
+        // Real vaqtda kuzatish
+        textInput.addEventListener("input", updateStats);
+
+        // Matnni nusxalash
+        function copyText() {
+            if (!textInput.value) return;
+            navigator.clipboard.writeText(textInput.value).then(() => {
+                alert("Matn buferga nusxalandi!");
+            });
+        }
+
+        // Matnni to'zalash
+        function clearText() {
+            textInput.value = "";
+            updateStats();
+        }
+    </script>
+</body>
+</html>
